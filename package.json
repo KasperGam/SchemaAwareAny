@@ -1,0 +1,10 @@
+{
+  "name": "SchemaAwareAny",
+  "version": "1.0.0",
+  "description": "A simple graphql scalar that will transform subgraph entity query representation arguments into their correct types given a particular schema",
+  "main": "index.js",
+  "repository": "git@github.com:KasperGam/SchemaAwareAny.git",
+  "author": "Kasper Gammeltoft",
+  "license": "MIT",
+  "private": false
+}

@@ -2,8 +2,11 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2019",
+    "types": ["node", "jest"],
     "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*", "index.ts"]
+  "include": ["src/**/*", "test/**/*", "index.ts"]
 }

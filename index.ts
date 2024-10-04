@@ -1,1 +1,1 @@
-export const HI = "Hello world";
+export { buildAnyScalarResolver } from "./src/SchemaAwareAny";

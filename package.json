@@ -9,12 +9,13 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn tsc",
+    "build-tsc": "yarn tsc",
+    "build": "yarn format && yarn lint && yarn build-tsc",
     "lint": "yarn eslint .",
-    "format": "yarn prettier . --write --ignore-unknown",
-    "prepare": "yarn format && yarn lint && yarn build"
+    "format": "yarn prettier . --write --ignore-unknown"
   },
   "dependencies": {
+    "@apollo/subgraph": "^2.9.2",
     "graphql": "^16.9.0"
   },
   "devDependencies": {

@@ -7,10 +7,10 @@ import {
   Kind,
   NamedTypeNode,
   TypeNode,
-} from "graphql";
+} from 'graphql';
 
-import { GraphQLResolverMap } from "@apollo/subgraph/dist/schema-helper/resolverMap";
-import { AnyType } from "@apollo/subgraph/dist/types";
+import { GraphQLResolverMap } from '@apollo/subgraph/dist/schema-helper/resolverMap';
+import { AnyType } from '@apollo/subgraph/dist/types';
 
 type Resolvers = GraphQLResolverMap;
 

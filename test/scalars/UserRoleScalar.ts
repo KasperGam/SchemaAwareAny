@@ -1,18 +1,18 @@
-import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind, ValueNode } from 'graphql';
 
-type UserRole = "admin" | "user" | "guest";
+type UserRole = 'admin' | 'user' | 'guest';
 
 const UserRoleEnumMap: Record<number, UserRole> = {
-  [2]: "admin",
-  [1]: "user",
-  [0]: "guest",
+  [2]: 'admin',
+  [1]: 'user',
+  [0]: 'guest',
 };
 
 const verifyRoleString = (role: string): role is UserRole => {
   switch (role) {
-    case "admin":
-    case "user":
-    case "guest":
+    case 'admin':
+    case 'user':
+    case 'guest':
       return true;
     default:
       return false;
@@ -29,9 +29,9 @@ const verifyRoleString = (role: string): role is UserRole => {
  * 'guest' => 0
  */
 export const UserRoleScalar = new GraphQLScalarType<UserRole, string | number>({
-  name: "UserRole",
+  name: 'UserRole',
   serialize(value: unknown) {
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       if (verifyRoleString(value)) {
         return value;
       } else {
@@ -44,13 +44,13 @@ export const UserRoleScalar = new GraphQLScalarType<UserRole, string | number>({
     }
   },
   parseValue(value: unknown) {
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       if (verifyRoleString(value)) {
         return value;
       } else {
         throw new GraphQLError(`Unrecognized user role ${value}`);
       }
-    } else if (typeof value === "number") {
+    } else if (typeof value === 'number') {
       const role = UserRoleEnumMap[value];
       if (!role) {
         throw new GraphQLError(`Unrecognized user role enum value ${value}`);

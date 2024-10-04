@@ -1,1 +1,1 @@
-export { buildAnyScalarResolver } from "./src/SchemaAwareAny";
+export { buildAnyScalarResolver } from './src/SchemaAwareAny';

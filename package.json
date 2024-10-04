@@ -1,5 +1,5 @@
 {
-  "name": "schema-aware-any",
+  "name": "graphql-schema-aware-any",
   "version": "1.0.0",
   "description": "A simple graphql scalar that will transform subgraph entity query representation arguments into their correct types given a particular schema",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build-tsc": "yarn tsc",
+    "build-tsc": "yarn tsc -p tsconfig.build.json",
     "build": "yarn format && yarn lint && yarn build-tsc",
     "lint": "yarn eslint .",
     "format": "yarn prettier . --write --ignore-unknown"

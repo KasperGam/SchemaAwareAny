@@ -114,11 +114,11 @@ const getMappedValue = (
 
       if (fieldDefinition) {
         // Go through recursively and map the value based on the type node's type
-        mappedValues[key] = getRecursiveMappedType(
-          fieldDefinition.type,
+        mappedValues[key] = getRecursiveMappedType({
+          node: fieldDefinition.type,
           fieldValue,
           resolvers,
-        );
+        });
       } else {
         mappedValues[key] = fieldValue;
       }
@@ -129,39 +129,60 @@ const getMappedValue = (
   );
 };
 
-const getRecursiveMappedType = (
-  node: TypeNode,
-  fieldValue: unknown,
-  resolvers: Resolvers,
-): unknown => {
+const getRecursiveMappedType = ({
+  node,
+  fieldValue,
+  resolvers,
+}: {
+  node: TypeNode;
+  fieldValue: unknown;
+  resolvers: Resolvers;
+}): unknown => {
   switch (node.kind) {
     case Kind.NAMED_TYPE: {
       // Named type should be resolvable by our custom scalars
-      return getNamedTypeMappedValue(node, fieldValue, resolvers);
+      return getNamedTypeMappedValue({
+        node,
+        fieldValue,
+        resolvers,
+        canBeNull: true,
+      });
     }
     case Kind.NON_NULL_TYPE: {
       // Sub type here is either list or named type
       const subType = node.type;
       if (subType.kind === Kind.NAMED_TYPE) {
-        return getNamedTypeMappedValue(subType, fieldValue, resolvers);
+        return getNamedTypeMappedValue({
+          node: subType,
+          fieldValue,
+          resolvers,
+          canBeNull: false,
+        });
       } else {
         // kind is list- Just map the values with a recursive call
         if (Array.isArray(fieldValue)) {
           return fieldValue.map((subFieldValue) =>
-            getRecursiveMappedType(subType.type, subFieldValue, resolvers),
+            getRecursiveMappedType({
+              node: subType.type,
+              fieldValue: subFieldValue,
+              resolvers,
+            }),
           );
         } else {
           // Otherwise this doesn't match! Just return field value
           return fieldValue;
         }
       }
-      break;
     }
     case Kind.LIST_TYPE: {
       // Kind is list- Just map the values with a recursive call
       if (Array.isArray(fieldValue)) {
         return fieldValue.map((subFieldValue) =>
-          getRecursiveMappedType(node.type, subFieldValue, resolvers),
+          getRecursiveMappedType({
+            node: node.type,
+            fieldValue: subFieldValue,
+            resolvers,
+          }),
         );
       } else {
         // Otherwise this doesn't match! Just return field value
@@ -175,14 +196,30 @@ const getRecursiveMappedType = (
  *
  * @param node The NamedTypeNode in the ast tree that corresponds to the field value to parse
  * @param fieldValue The field value to parse
+ * @param resolvers The list of resolvers to use for custom scalars
+ * @param canBeNull If true, we return null if the field value is null. Otherwise, we throw
+ * an error if the field value is null.
  * @returns The parsed field value, using the existing custom resolvers
  * (or if not found as a custom scalar, returns the field value with no parsing)
  */
-const getNamedTypeMappedValue = (
-  node: NamedTypeNode,
-  fieldValue: unknown,
-  resolvers: Resolvers,
-): unknown => {
+const getNamedTypeMappedValue = ({
+  node,
+  fieldValue,
+  resolvers,
+  canBeNull,
+}: {
+  node: NamedTypeNode;
+  fieldValue: unknown;
+  resolvers: Resolvers;
+  canBeNull: boolean;
+}): unknown => {
+  if (fieldValue === null) {
+    if (canBeNull) {
+      return fieldValue;
+    } else {
+      throw new GraphQLError(`Field cannot be null ${node.name.value}`);
+    }
+  }
   const fieldType = node.name.value;
   const customScalar = resolvers[fieldType];
   if (customScalar instanceof GraphQLScalarType) {
